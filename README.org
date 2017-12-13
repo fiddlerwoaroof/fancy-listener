@@ -1,0 +1,7 @@
+* What Is This???
+
+An experiment with Lispworks CAPI to create a Lisp listener with a
+space for dynamically created components: think a widget that runs
+your tests and displays the results.  The idea is to provide a
+repl-like gui that can be adjusted as necessary to suit one's
+immediate needs.
