@@ -1,13 +1,12 @@
 (defpackage :fancy-listener
-  (:use :cl :fl-user)
-  (:export :row :column :button :stream-disp))
+  (:use :cl )
+  (:export :row :column :button :stream-disp :fancy-listener *interface-layout*))
 
 (defpackage :fl-user
-  (:use :cl :fancy-listener)
-  (:export *interface-layout*))
-(in-package :fl-user)
+  (:use :cl :fancy-listener))
 
-(defvar *interface-layout* nil)
+(in-package :fl-user)
+(declaim (special fancy-listener:*interface-layout*))
 
 (defmacro with-pp ((pane) &body body)
   `(capi:apply-in-pane-process ,pane
@@ -24,9 +23,13 @@
 (defun pop-widget ()
   (when *interface-layout*
     (with-pp (*interface-layout*)
-      (pop (capi:layout-description *interface-layout*)))))
+      (pop (capi:layout-description *interface-layout*))
+      (when (eql (first (capi:layout-description *interface-layout*))
+                 :divider)
+        (pop (capi:layout-description *interface-layout*))))))
 
 (in-package :fancy-listener)
+(defvar *interface-layout* nil)
 
 (defun row (&rest components)
   (make-instance 'capi:row-layout :children components))
@@ -57,3 +60,6 @@
                                              *interface-layout*))))
     (capi:interactive-pane-execute-command listener-pane "(in-package :fl-user)")
     result))
+
+(defun fancy-listener ()
+  (capi:display (interface)))
